@@ -8,7 +8,7 @@ public:
 private:
     uint64_t* bitboards = new uint64_t[12];
 
-    bool turn;
+    bool turn = WHITE;
 
     bool whiteCanCastleKing = true;
     bool whiteCanCastleQueen = true;
@@ -259,20 +259,10 @@ private:
         uint64_t bitboard = turn == WHITE ? bitboards[WHITE_BISHOP] : bitboards[BLACK_BISHOP];
         
         if (getBit(bitboard, square)) {
-            std::vector<Move> diag1Moves;
-            std::vector<Move> diag2Moves;
-            std::vector<Move> diag3Moves;
-            std::vector<Move> diag4Moves;
-
-            getMoveChains(diag1Moves, square, UP * RIGHT);
-            getMoveChains(diag2Moves, square, UP * LEFT);
-            getMoveChains(diag3Moves, square, DOWN * RIGHT);
-            getMoveChains(diag4Moves, square, DOWN * LEFT);
-
-            moves.insert(moves.end(), diag1Moves.begin(), diag1Moves.end());
-            moves.insert(moves.end(), diag2Moves.begin(), diag2Moves.end());
-            moves.insert(moves.end(), diag3Moves.begin(), diag3Moves.end());
-            moves.insert(moves.end(), diag4Moves.begin(), diag4Moves.end());
+            getMoveChains(moves, square, UP * RIGHT);
+            getMoveChains(moves, square, UP * LEFT);
+            getMoveChains(moves, square, DOWN * RIGHT);
+            getMoveChains(moves, square, DOWN * LEFT);
         }
     }
 
@@ -280,20 +270,10 @@ private:
         uint64_t bitboard = turn == WHITE ? bitboards[WHITE_ROOK] : bitboards[BLACK_ROOK];
 
         if (getBit(bitboard, square)) {
-            std::vector<Move> straight1Moves;
-            std::vector<Move> straight2Moves;
-            std::vector<Move> straight3Moves;
-            std::vector<Move> straight4Moves;
-
-            getMoveChains(straight1Moves, square, UP);
-            getMoveChains(straight2Moves, square, DOWN);
-            getMoveChains(straight3Moves, square, RIGHT);
-            getMoveChains(straight4Moves, square, LEFT);
-
-            moves.insert(moves.end(), straight1Moves.begin(), straight1Moves.end());
-            moves.insert(moves.end(), straight2Moves.begin(), straight2Moves.end());
-            moves.insert(moves.end(), straight3Moves.begin(), straight3Moves.end());
-            moves.insert(moves.end(), straight4Moves.begin(), straight4Moves.end());
+            getMoveChains(moves, square, UP);
+            getMoveChains(moves, square, DOWN);
+            getMoveChains(moves, square, RIGHT);
+            getMoveChains(moves, square, LEFT);
         }
     }
 
@@ -301,32 +281,14 @@ private:
         uint64_t bitboard = turn == WHITE ? bitboards[WHITE_QUEEN] : bitboards[BLACK_QUEEN];
 
         if (getBit(bitboard, square)) {
-            std::vector<Move> straight1Moves;
-            std::vector<Move> straight2Moves;
-            std::vector<Move> straight3Moves;
-            std::vector<Move> straight4Moves;
-            std::vector<Move> diag1Moves;
-            std::vector<Move> diag2Moves;
-            std::vector<Move> diag3Moves;
-            std::vector<Move> diag4Moves;
-
-            getMoveChains(straight1Moves, square, UP);
-            getMoveChains(straight2Moves, square, DOWN);
-            getMoveChains(straight3Moves, square, RIGHT);
-            getMoveChains(straight4Moves, square, LEFT);
-            getMoveChains(diag1Moves, square, UP * RIGHT);
-            getMoveChains(diag2Moves, square, UP * LEFT);
-            getMoveChains(diag3Moves, square, DOWN * RIGHT);
-            getMoveChains(diag4Moves, square, DOWN * LEFT);
-
-            moves.insert(moves.end(), straight1Moves.begin(), straight1Moves.end());
-            moves.insert(moves.end(), straight2Moves.begin(), straight2Moves.end());
-            moves.insert(moves.end(), straight3Moves.begin(), straight3Moves.end());
-            moves.insert(moves.end(), straight4Moves.begin(), straight4Moves.end());
-            moves.insert(moves.end(), diag1Moves.begin(), diag1Moves.end());
-            moves.insert(moves.end(), diag2Moves.begin(), diag2Moves.end());
-            moves.insert(moves.end(), diag3Moves.begin(), diag3Moves.end());
-            moves.insert(moves.end(), diag4Moves.begin(), diag4Moves.end());
+            getMoveChains(moves, square, UP);
+            getMoveChains(moves, square, DOWN);
+            getMoveChains(moves, square, RIGHT);
+            getMoveChains(moves, square, LEFT);
+            getMoveChains(moves, square, UP * RIGHT);
+            getMoveChains(moves, square, UP * LEFT);
+            getMoveChains(moves, square, DOWN * RIGHT);
+            getMoveChains(moves, square, DOWN * LEFT);
         }
     }
 
@@ -398,7 +360,6 @@ private:
 public:
     Position() {
         bitboards = parseFENboard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-        turn = WHITE;
     }
 
     Position(Position* position) {
@@ -414,7 +375,7 @@ public:
         this->enPassantSquare = position->enPassantSquare;
     }
 
-    Position(const std::string& FENstring) {
+    void setPositionWithFEN(const std::string& FENstring) {
         std::vector<std::string> FENtokens = parseFENstring(FENstring);
         bitboards = parseFENboard(FENtokens[0]);
         

@@ -146,9 +146,9 @@ public:
     }
     
     Board(const std::string& FENstring) {
-        position = Position(FENstring);
-        initTextures();
-    };
+        Board();
+        position.setPositionWithFEN(FENstring);
+    }
     
     void draw(sf::RenderWindow& window) {
         drawBoard(window);
